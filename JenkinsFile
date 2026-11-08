@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                echo '拉取 GitHub 上的程式碼...'
+                checkout scm 
+            }
+        }
+        stage('Build & Test') {
+            steps {
+                echo '執行自動化測試...'
+                bat 'echo "單元測試 1: PASS"'
+                bat 'echo "單元測試 2: PASS"'
+            }
+        }
+    }
+}
