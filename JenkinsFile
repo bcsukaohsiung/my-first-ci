@@ -1,17 +1,17 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                echo '拉取 GitHub 上的程式碼...'
-                checkout scm 
+                echo '模擬編譯軟體...'
+                // 在 Windows 上產出一個模擬的執行檔或打包檔
+                bat 'echo "V1.0 Release Build" > my_app.exe'
             }
         }
-        stage('Build & Test') {
+        stage('Archive') {
             steps {
-                echo '執行自動化測試...'
-                bat 'echo "單元測試 1: PASS"'
-                bat 'echo "單元測試 2: PASS"'
+                // 告訴 Jenkins 把產出的 my_app.exe 保存並顯示在建置頁面上
+                archiveArtifacts artifacts: 'my_app.exe', fingerprint: true
             }
         }
     }
