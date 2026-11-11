@@ -1,18 +1,44 @@
 pipeline {
     agent any
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo '模擬編譯軟體...'
-                // 在 Windows 上產出一個模擬的執行檔或打包檔
-                bat 'echo "V1.0 Release Build" > my_app.exe'
+                echo '從 GitHub 拉取 C++ 最新原始碼...'
+                checkout scm
             }
         }
-        stage('Archive') {
+
+        stage('Build C++ App') {
             steps {
-                // 告訴 Jenkins 把產出的 my_app.exe 保存並顯示在建置頁面上
-                archiveArtifacts artifacts: 'my_app.exe', fingerprint: true
+                echo '編譯 C++ 程式碼為 main.exe...'
+                // 使用 g++ 將 main.cpp 編譯成 main.exe
+                bat 'g++ -o main.exe main.cpp'
             }
+        }
+
+        stage('Automated Test') {
+            steps {
+                echo '執行自動化測試 (自動帶入測試值 10 與 20)...'
+                // 將 "10 20" 輸入給 main.exe 進行非互動式自動測試
+                bat 'echo 10 20 | main.exe'
+            }
+        }
+
+        stage('Archive Release Artifact') {
+            steps {
+                echo '發行成果：將 main.exe 歸檔儲存至 Jenkins 建置頁面...'
+                archiveArtifacts artifacts: 'main.exe', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ C++ 專案編譯、自動化測試與產物歸檔完全成功！'
+        }
+        failure {
+            echo '❌ 執行失敗！請確認系統環境變數 PATH 中是否包含 g++ 編譯器。'
         }
     }
 }
