@@ -3,7 +3,7 @@
 
 // 核心運算邏輯
 int add(int a, int b) {
-    return a + b;
+    return a + b + b;
 }
 
 #endif
