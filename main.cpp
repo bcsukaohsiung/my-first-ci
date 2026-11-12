@@ -1,28 +1,34 @@
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
 int main() {
     int a = 0, b = 0;
-    
+
     cout << "=========================" << endl;
-    cout << " C++ 加法計算器 (CI/CD 範例)" << endl;
+    cout << " C++ Adder (CI/CD Demo)" << endl;
     cout << "=========================" << endl;
-    
-    cout << "請輸入第一個整數 a: ";
+
+    cout << "Enter first integer a: ";
     if (!(cin >> a)) {
-        cerr << "錯誤：輸入的不是有效整數！" << endl;
+        cerr << "Error: Invalid integer input!" << endl;
         return 1;
     }
 
-    cout << "請輸入第二個整數 b: ";
+    cout << "Enter second integer b: ";
     if (!(cin >> b)) {
-        cerr << "錯誤：輸入的不是有效整數！" << endl;
+        cerr << "Error: Invalid integer input!" << endl;
         return 1;
     }
 
-    cout << "\n計算結果：" << endl;
+    cout << "\nResult:" << endl;
     cout << a << " + " << b << " = " << (a + b) << endl;
+
+    // 提示使用者按 Enter 結束，維持 console 畫面
+    cout << "\nPress Enter to exit...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 
     return 0;
 }

@@ -4,30 +4,30 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo '從 GitHub 拉取 C++ 最新原始碼...'
+                echo 'Fetching source code from GitHub...'
                 checkout scm
             }
         }
 
         stage('Build C++ App') {
             steps {
-                echo '編譯 C++ 程式碼為 main.exe...'
-                // 使用 g++ 將 main.cpp 編譯成 main.exe
+                echo 'Compiling main.cpp into main.exe...'
                 bat 'g++ -o main.exe main.cpp'
             }
         }
 
-        stage('Automated Test') {
+        stage('Automated Test & Verification') {
             steps {
-                echo '執行自動化測試 (自動帶入測試值 10 與 20)...'
-                // 將 "10 20" 輸入給 main.exe 進行非互動式自動測試
-                bat 'echo 10 20 | main.exe'
+                echo 'Running test and verifying calculation (10 + 20 = 30)...'
+                // 自動帶入 10 20，並比對輸出文字是否精準包含 "10 + 20 = 30"
+                // 若找不到 "10 + 20 = 30"，findstr 會丟出 exit code 1，引發 Jenkins 建置失敗
+                bat 'echo 10 20 | main.exe | findstr /C:"10 + 20 = 30"'
             }
         }
 
         stage('Archive Release Artifact') {
             steps {
-                echo '發行成果：將 main.exe 歸檔儲存至 Jenkins 建置頁面...'
+                echo 'Archiving main.exe artifact...'
                 archiveArtifacts artifacts: 'main.exe', fingerprint: true
             }
         }
@@ -35,10 +35,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ C++ 專案編譯、自動化測試與產物歸檔完全成功！'
+            echo '✅ Build, calculation verification, and artifact archiving ALL PASSED!'
         }
         failure {
-            echo '❌ 執行失敗！請確認系統環境變數 PATH 中是否包含 g++ 編譯器。'
+            echo '❌ Verification FAILED! Calculation output does not match expected result.'
         }
     }
 }
