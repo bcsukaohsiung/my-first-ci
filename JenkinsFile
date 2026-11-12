@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo 'Compiling main.exe and test.exe...'
                 bat 'g++ -o main.exe main.cpp'
-                bat 'g++ -o test.exe test.cpp'
+                bat 'g++ -o test.exe tester.cpp'
             }
         }
 
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo 'Executing automated C++ unit tests...'
                 // 直接執行編譯好的 test.exe，若 assert 失敗會自動中斷 Pipeline
-                bat 'test.exe'
+                bat 'tester.exe'
             }
         }
 
