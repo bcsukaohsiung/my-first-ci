@@ -9,25 +9,26 @@ pipeline {
             }
         }
 
-        stage('Build C++ App') {
+        stage('Build App & Unit Tests') {
             steps {
-                echo 'Compiling main.cpp into main.exe...'
+                echo 'Compiling main.exe and test.exe...'
                 bat 'g++ -o main.exe main.cpp'
+                bat 'g++ -o test.exe test.cpp'
             }
         }
 
-        stage('Automated Test & Verification') {
+        stage('Run Unit Tests') {
             steps {
-                echo 'Running test and verifying calculation (10 + 20 = 30)...'
-                // 自動帶入 10 20，並比對輸出文字是否精準包含 "10 + 20 = 30"
-                // 若找不到 "10 + 20 = 30"，findstr 會丟出 exit code 1，引發 Jenkins 建置失敗
-                bat 'echo 10 20 | main.exe | findstr /C:"10 + 20 = 30"'
+                echo 'Executing automated C++ unit tests...'
+                // 直接執行編譯好的 test.exe，若 assert 失敗會自動中斷 Pipeline
+                bat 'test.exe'
             }
         }
 
         stage('Archive Release Artifact') {
             steps {
-                echo 'Archiving main.exe artifact...'
+                echo 'Archiving main.exe release artifact...'
+                // 僅發行正式主程式 main.exe，不包含 test.exe
                 archiveArtifacts artifacts: 'main.exe', fingerprint: true
             }
         }
@@ -35,10 +36,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build, calculation verification, and artifact archiving ALL PASSED!'
+            echo '✅ Build, unit tests, and artifact archiving ALL PASSED!'
         }
         failure {
-            echo '❌ Verification FAILED! Calculation output does not match expected result.'
+            echo '❌ Pipeline FAILED! Check Console Output for compilation or unit test assertion errors.'
         }
     }
 }

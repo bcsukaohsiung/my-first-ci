@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include "adder.h"
 
 using namespace std;
 
@@ -23,9 +24,8 @@ int main() {
     }
 
     cout << "\nResult:" << endl;
-    cout << a << " + " << d << " = " << (a + b) << endl;
+    cout << a << " + " << b << " = " << add(a, b) << endl;
 
-    // 提示使用者按 Enter 結束，維持 console 畫面
     cout << "\nPress Enter to exit...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
